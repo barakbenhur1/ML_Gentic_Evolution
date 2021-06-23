@@ -158,7 +158,6 @@ class ViewController: UIViewController {
         target = String.random(length: Int.random(in: 6...30))
         poll.start(target: target)
         done = false
-        button.removeFromSuperview()
         startTimer()
     }
 }
