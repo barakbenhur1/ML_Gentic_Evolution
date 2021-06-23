@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B62A4C022682989E003CEB90 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A4C002682989E003CEB90 /* Header.swift */; };
+		B62A4C032682989E003CEB90 /* Header.xib in Resources */ = {isa = PBXBuildFile; fileRef = B62A4C012682989E003CEB90 /* Header.xib */; };
 		B6423D76268092270066A765 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D75268092270066A765 /* AppDelegate.swift */; };
 		B6423D78268092270066A765 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D77268092270066A765 /* SceneDelegate.swift */; };
 		B6423D7A268092270066A765 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D79268092270066A765 /* ViewController.swift */; };
@@ -16,6 +18,9 @@
 		B6423D85268092290066A765 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6423D83268092290066A765 /* LaunchScreen.storyboard */; };
 		B6423D90268092290066A765 /* ML_0Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D8F268092290066A765 /* ML_0Tests.swift */; };
 		B6423D9B268092290066A765 /* ML_0UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D9A268092290066A765 /* ML_0UITests.swift */; };
+		B6423DAC26809D860066A765 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423DAB26809D860066A765 /* Poll.swift */; };
+		B68859422682700D00933C98 /* AgentCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B68859412682700C00933C98 /* AgentCollectionViewCell.xib */; };
+		B68859472682710800933C98 /* AgentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68859462682710800933C98 /* AgentCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B62A4C002682989E003CEB90 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
+		B62A4C012682989E003CEB90 /* Header.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Header.xib; sourceTree = "<group>"; };
 		B6423D72268092270066A765 /* ML_0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ML_0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6423D75268092270066A765 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6423D77268092270066A765 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +58,9 @@
 		B6423D96268092290066A765 /* ML_0UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ML_0UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6423D9A268092290066A765 /* ML_0UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ML_0UITests.swift; sourceTree = "<group>"; };
 		B6423D9C268092290066A765 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B6423DAB26809D860066A765 /* Poll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
+		B68859412682700C00933C98 /* AgentCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AgentCollectionViewCell.xib; sourceTree = "<group>"; };
+		B68859462682710800933C98 /* AgentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +119,11 @@
 				B6423D83268092290066A765 /* LaunchScreen.storyboard */,
 				B6423D86268092290066A765 /* Info.plist */,
 				B6423D7E268092270066A765 /* ML_0.xcdatamodeld */,
+				B6423DAB26809D860066A765 /* Poll.swift */,
+				B68859412682700C00933C98 /* AgentCollectionViewCell.xib */,
+				B68859462682710800933C98 /* AgentCollectionViewCell.swift */,
+				B62A4C002682989E003CEB90 /* Header.swift */,
+				B62A4C012682989E003CEB90 /* Header.xib */,
 			);
 			path = ML_0;
 			sourceTree = "<group>";
@@ -235,7 +250,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6423D85268092290066A765 /* LaunchScreen.storyboard in Resources */,
+				B62A4C032682989E003CEB90 /* Header.xib in Resources */,
 				B6423D82268092290066A765 /* Assets.xcassets in Resources */,
+				B68859422682700D00933C98 /* AgentCollectionViewCell.xib in Resources */,
 				B6423D7D268092270066A765 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,7 +278,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6423DAC26809D860066A765 /* Poll.swift in Sources */,
 				B6423D7A268092270066A765 /* ViewController.swift in Sources */,
+				B68859472682710800933C98 /* AgentCollectionViewCell.swift in Sources */,
+				B62A4C022682989E003CEB90 /* Header.swift in Sources */,
 				B6423D80268092270066A765 /* ML_0.xcdatamodeld in Sources */,
 				B6423D76268092270066A765 /* AppDelegate.swift in Sources */,
 				B6423D78268092270066A765 /* SceneDelegate.swift in Sources */,
@@ -441,7 +461,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = D6DN86P8S8;
+				DEVELOPMENT_TEAM = 8K3YXZLKHS;
 				INFOPLIST_FILE = ML_0/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -460,7 +480,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = D6DN86P8S8;
+				DEVELOPMENT_TEAM = 8K3YXZLKHS;
 				INFOPLIST_FILE = ML_0/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
