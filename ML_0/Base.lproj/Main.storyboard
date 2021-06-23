@@ -97,16 +97,32 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="B4R-eK-1RQ"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="Cgj-vQ-6Uf"/>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcO-m4-2ei">
+                                <rect key="frame" x="167" y="748" width="80" height="48"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="Gor-MM-ST8"/>
+                                    <constraint firstAttribute="height" constant="48" id="qZ7-nU-apn"/>
+                                </constraints>
+                                <state key="normal" title="Reset">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="resetWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QHo-ey-1S9"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qxB-HU-5Qe"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="by1-s7-6SS" firstAttribute="leading" secondItem="qxB-HU-5Qe" secondAttribute="leading" id="0n1-Cy-DB3"/>
+                            <constraint firstItem="xcO-m4-2ei" firstAttribute="centerX" secondItem="qxB-HU-5Qe" secondAttribute="centerX" id="4ZB-sA-YAN"/>
                             <constraint firstItem="9zU-A6-7hr" firstAttribute="leading" secondItem="qxB-HU-5Qe" secondAttribute="leading" id="6hx-2m-NUW"/>
                             <constraint firstItem="by1-s7-6SS" firstAttribute="centerX" secondItem="qxB-HU-5Qe" secondAttribute="centerX" id="H6J-A4-P1y"/>
                             <constraint firstItem="9zU-A6-7hr" firstAttribute="trailing" secondItem="qxB-HU-5Qe" secondAttribute="trailing" id="IjJ-Yx-Oia"/>
                             <constraint firstItem="by1-s7-6SS" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="N2U-Nb-xFC"/>
                             <constraint firstItem="9zU-A6-7hr" firstAttribute="top" secondItem="qxB-HU-5Qe" secondAttribute="top" id="RK2-4S-Czk"/>
+                            <constraint firstAttribute="bottom" secondItem="xcO-m4-2ei" secondAttribute="bottom" constant="100" id="bUg-3q-3kA"/>
                             <constraint firstItem="9zU-A6-7hr" firstAttribute="bottom" secondItem="by1-s7-6SS" secondAttribute="top" id="ePS-xX-uK0"/>
                             <constraint firstItem="qxB-HU-5Qe" firstAttribute="bottom" secondItem="by1-s7-6SS" secondAttribute="bottom" id="g0F-XG-wve"/>
                             <constraint firstItem="qxB-HU-5Qe" firstAttribute="trailing" secondItem="by1-s7-6SS" secondAttribute="trailing" id="jjP-ky-27s"/>
@@ -114,6 +130,7 @@
                     </view>
                     <connections>
                         <outlet property="body" destination="ANz-5B-eWW" id="w8R-DX-Xaf"/>
+                        <outlet property="resetButton" destination="xcO-m4-2ei" id="16G-DN-rz9"/>
                         <outlet property="time" destination="v84-Dp-EDI" id="zdX-bi-gnD"/>
                     </connections>
                 </viewController>
@@ -125,6 +142,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

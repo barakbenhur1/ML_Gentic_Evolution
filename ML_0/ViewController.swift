@@ -9,16 +9,15 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private let numOfAgents = 800
-    private var target = "To be, or not to be." //String.random(length: Int.random(in: 6...30))
+    private let semaphore = DispatchSemaphore(value: 1)
+    
+    private let numOfAgents = 400
+   
+    private var target = "To be, or not to be." // "To be, or not to be, that is the question?!: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep; No more; and by a sleep, to say we end The heart-ache, and the thousand natural shocks That Flesh is heir to? 'Tis a consummation Devoutly to be wished." //String.random(length: Int.random(in: 6...30))
     
     private var poll: Poll<String>!
     
     private var startTime: Date!
-    
-    private var guessLabel: UILabel!
-    
-    private var timeLabel: UILabel!
     
     private var gView: UIView!
     
@@ -32,11 +31,15 @@ class ViewController: UIViewController {
     
     private var scroll: UIScrollView!
     
+    @IBOutlet weak var resetButton: UIButton!
+    
     @IBOutlet weak var time: UILabel!
     @IBOutlet weak var body: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        resetButton.isHidden = true
         
         body.numberOfLines = 0
         body.lineBreakMode = .byWordWrapping
@@ -60,8 +63,9 @@ class ViewController: UIViewController {
         
         poll.start(target: target)
         
-        poll.updateString = { [self] guess, val, lettersIndexs, done in
-            DispatchQueue.global().async {
+        poll.finish = { [self] guess, val, lettersIndexs, done in
+            //            guard collection == nil else { return }
+            DispatchQueue.main.async {
                 update(guess: guess, string: val, lettersIndexs: lettersIndexs, done: done)
             }
         }
@@ -73,9 +77,11 @@ class ViewController: UIViewController {
     
     private func startTimer() {
         timer = Timer(timeInterval: 0.0001, repeats: true) { [self] (_) in
-            guard !done, startTime != nil else { return }
+            guard collection == nil, !done, startTime != nil else { return }
             DispatchQueue.main.async {
                 time.text = "Time: \(String(format: "%.2f", Date() - startTime)) Sec׳"
+                let displayData = poll.getUpdatedData()
+                update(guess: displayData.guess, string: displayData.val, lettersIndexs: displayData.lettersIndexs, done: displayData.done)
             }
         }
         
@@ -83,11 +89,20 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func graphic() {
-        DispatchQueue.main.async { [self] in
+        guard collection == nil else { return }
         
         bestCellIndex = 0
         
         gView = UIView(frame: view.frame)
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemMaterial)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = gView.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        body.alpha = 0.2
+        blurEffectView.alpha = 0.88
+        gView.addSubview(blurEffectView)
+        //        gView.addSubview(blurEffectView)
+        //        gView.addSubview(blurEffectView)
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionHeadersPinToVisibleBounds = true
@@ -100,14 +115,15 @@ class ViewController: UIViewController {
         
         collection!.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
         
-            collection!.dataSource = self
-            
-            collection!.delegate = self
-            
-            collection!.register(UINib(nibName: "AgentCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "Cell")
-            
-            RunLoop.current.add(Timer(timeInterval: 0.5, repeats: true) { (timer: Timer) in
-                guard let collection = self.collection else {
+        collection!.dataSource = self
+        
+        collection!.delegate = self
+        
+        collection!.register(UINib(nibName: "AgentCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "Cell")
+        
+        if !done {
+            RunLoop.current.add(Timer(timeInterval: 0.4, repeats: true) { (timer: Timer) in
+                guard !self.done, let collection = self.collection else {
                     timer.invalidate()
                     return
                 }
@@ -115,26 +131,29 @@ class ViewController: UIViewController {
                     collection.reloadData()
                 }
             }, forMode: .common)
-            
-            gView.backgroundColor = .clear
-            
-            view.addSubview(gView)
-            
-            let swipeL = UISwipeGestureRecognizer(target: self, action: #selector(closeView))
-            swipeL.direction = .left
-            let swipeR = UISwipeGestureRecognizer(target: self, action: #selector(closeView))
-            swipeR.direction = .right
-            gView.addGestureRecognizer(swipeL)
-            gView.addGestureRecognizer(swipeR)
         }
+        
+        gView.backgroundColor = .clear
+        
+        view.addSubview(gView)
+        
+        let swipeL = UISwipeGestureRecognizer(target: self, action: #selector(closeView))
+        swipeL.direction = .left
+        let swipeR = UISwipeGestureRecognizer(target: self, action: #selector(closeView))
+        swipeR.direction = .right
+        gView.addGestureRecognizer(swipeL)
+        gView.addGestureRecognizer(swipeR)
     }
     
     @objc private func closeView() {
         collection = nil
+        body.alpha = 1
         gView.removeFromSuperview()
     }
     
-    @objc private func reset(button: UIButton) {
+    @IBAction func reset(button: UIButton) {
+        semaphore.signal()
+        resetButton.isHidden = true
         startTime = Date()
         target = String.random(length: Int.random(in: 6...30))
         poll.start(target: target)
@@ -146,38 +165,41 @@ class ViewController: UIViewController {
 
 extension ViewController: PollUpdates {
     func update(guess: String, string: String,lettersIndexs: [Int], done: Bool) {
-        DispatchQueue.global().async { [self] in
-            let atter = NSMutableAttributedString(string: guess)
-            for index in lettersIndexs {
-                atter.addAttributes([.foregroundColor: UIColor.systemGreen], range: NSRange(location: index, length: 1))
+        semaphore.wait()
+        guard !self.done else { return }
+        self.done = done
+        if done {
+            poll.sortAgents()
+            DispatchQueue.main.async { [self] in
+                collection?.reloadData()
             }
+            print("Done!!!")
             
-            let text = "Size of poll: \(numOfAgents)\n\nLength: \(target.count)\n\nTarget: \(target)\n\n\(string)"
-            let newAtter = NSMutableAttributedString(string: text)
-            newAtter.replaceCharacters(in: (text as NSString).range(of: "{%@}"), with: atter)
-            DispatchQueue.main.async {
-                body.attributedText = newAtter
-            }
-            self.done = done
-            if done {
-                poll.sortAgents()
-                DispatchQueue.main.async {
-                    collection?.reloadData()
-                }
-                print("Done!!!")
-                
-                timer.invalidate()
-                timer = nil
-                
-                DispatchQueue.main.async {
-                    let button = UIButton(frame: CGRect(origin: CGPoint(x: (UIScreen.main.bounds.width / 2) - 40, y:  UIScreen.main.bounds.height - 100), size: CGSize(width: 80, height: 48)))
-                    button.backgroundColor = .systemBlue
-                    button.setTitle("Reset", for: .normal)
-                    button.addTarget(self, action: #selector(reset), for: .touchUpInside)
-                    view.addSubview(button)
-                }
-            }
+            timer.invalidate()
+            timer = nil
+            
+            resetButton.isHidden = false
         }
+        
+        let atter = NSMutableAttributedString(string: guess)
+        for index in lettersIndexs {
+            atter.addAttributes([.foregroundColor: UIColor.systemGreen], range: NSRange(location: index, length: 1))
+        }
+        
+        let text = "Size of poll: \(numOfAgents)\n\nLength: \(target.count)\n\nTarget: \(target)\n\n\(string)"
+        let newAtter = NSMutableAttributedString(string: text)
+        newAtter.replaceCharacters(in: (text as NSString).range(of: "{%@}"), with: atter)
+        
+        let rangeOfTarget = (newAtter.string as NSString).range(of: target)
+        for index in lettersIndexs {
+            newAtter.addAttributes([.foregroundColor: UIColor.systemPurple], range: NSRange(location: rangeOfTarget.location + index, length: 1))
+        }
+        
+        DispatchQueue.main.async { [self] in
+            //                collection?.reloadData()
+            body.attributedText = newAtter
+        }
+        semaphore.signal()
     }
 }
 
@@ -199,7 +221,7 @@ extension ViewController: UICollectionViewDataSource {
         headerView.text.text = "Number Of Agents: \(numOfAgents)\nGeneration: \(poll.getGeneration())\nBest: \(String(format: "%.6f",poll.getBest()?.fitnessVal ?? 0))"
         
         headerView.backgroundColor = UIColor.white.withAlphaComponent(0.64)
-
+        
         return headerView
     }
     
@@ -216,6 +238,7 @@ extension ViewController: UICollectionViewDataSource {
                 cell.container.backgroundColor = UIColor(hexString: "#FFD479", alpha: 0.54)
                 bestCellIndex = indexPath.row
             }
+            cell.num.text = "Agent Num: \(indexPath.row)"
             cell.set(title: arr[indexPath.row].getData() ?? "", sub: "\(arr[indexPath.row].fitnessVal ?? 0)")
             
             //        if done {

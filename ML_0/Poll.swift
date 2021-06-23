@@ -9,6 +9,7 @@ import UIKit
 
 protocol Calculable: Equatable & Sequence & Hashable {
     static func empty() -> Self
+    init()
     func length() -> Int
     func elementsEqual(_ other: Self) -> Bool
     static func ==(lhs: Self, rhs: Self) -> Bool
@@ -33,9 +34,9 @@ class Poll<T: Calculable> {
     
     private var best: Agent<T>?
     
-    var updateString: ((_ guess: T, _ val: T, _ lettersIndexs: [Int], _ done: Bool) -> ())?
+    var finish: ((_ guess: T, _ val: T, _ lettersIndexs: [Int], _ done: Bool) -> ())?
     
-    private var gen = 0
+    private var gen: Int!
     
     private var rateOfChange: CGFloat = 1
     final private let rateOfChangeEvolution: CGFloat = 0.9996
@@ -50,6 +51,7 @@ class Poll<T: Calculable> {
     
     init (num: Int) {
         self.num = num
+        self.gen = 0
     }
     
     func getAgents() -> [Agent<T>] {
@@ -74,18 +76,34 @@ class Poll<T: Calculable> {
         }
     }
     
+    func getUpdatedData() -> (guess: T, val: T, lettersIndexs: [Int], done: Bool) {
+        guard let best = best else {
+            return (String(repeating: empty, count: length) as! T, "Generation: \(0)\n\nGuss: {%@}\n\nSolved: \(0)%\n\nLetters so far:\n\n" as! T, [], false)
+        }
+        
+        var letters = ""
+        var indexs = [Int]()
+        for i in 0..<length {
+            letters += best.getData()![i] == target[i] ? "\(best.getData()![i])" : empty
+            if best.getData()![i] == target[i] {
+                indexs.append(i)
+            }
+        }
+        return (best.getData()!, "Generation: \(gen!)\n\nGuss: {%@}\n\nSolved: \(CGFloat(best.count!) / CGFloat(length) * 100)%\n\nLetters so far: \(letters)\n\n" as! T, indexs, false)
+    }
+    
     func start(target: T) {
-//        self.updateString = update
         self.target = target
         self.length = target.length()
+        self.gen = 0
+        best = nil
         agents = [Agent<T>]()
         
-        DispatchQueue.global().async { [self] in
+        DispatchQueue.init(label: "Work").async { [self] in
             for _ in 0..<num {
                 agents.append(createAgent())
             }
             
-            updateString?(String(repeating: empty, count: length) as! T, "Generation: \(0)\n\nGuss: {%@}\n\nSolved: \(0)%\n\nLetters so far:\n\n" as! T, [], false)
             self.runGen()
         }
     }
@@ -93,24 +111,26 @@ class Poll<T: Calculable> {
     private let empty =  "  _  "
 //    private var increaseLimit: CGFloat = 0.002
     
+    private var safe = 0
+    
     private func runGen() {
         var best: Agent<T>!
 //        randomFix = [String: Int]()
         var score: CGFloat = 0
         
         //        print("Rate Of Change: \(rateOfChange)")
-        
+        safe -= 1
         for agent in agents {
             //            print(agent.toString())
             let agentToAdd = agent
             
-            if let guess = agentToAdd.getData(), agentToAdd.count == target.length() {
+            if let guess = agentToAdd.getData(), guess == target && agentToAdd.count == length {
                 var letters = [Int]()
                 for i in 0..<guess.length() {
                     letters.append(i)
                 }
 
-                updateString?(guess, "Generation: \(gen)\n\nGuss: {%@}\n\nSolved: \(100)%\n\nLetters so far: \(guess)\n\n" as! T, letters, true)
+                finish?(guess, "Generation: \(gen!)\n\nGuss: {%@}\n\nSolved: \(100)%\n\nLetters so far: \(guess)\n\n" as! T, letters, true)
                 return
             }
             
@@ -128,13 +148,12 @@ class Poll<T: Calculable> {
                         indexs.append(i)
                     }
                 }
-                
-                updateString?(best.getData() ?? T.empty(), "Generation: \(gen)\n\nGuss: {%@}\n\nSolved: \(Int( CGFloat(letters.replacingOccurrences(of: empty, with: "").count) / CGFloat(length) * 100))%\n\nLetters so far: \(letters)\n\n" as! T, indexs, false)
             }
         }
         
         var tempAgents = [Agent<T>]()
-        let sorted = agents.sorted { (obj, obj2) -> Bool in
+        let sort = agents!
+        let sorted = sort.sorted { (obj, obj2) -> Bool in
             guard let fitness = obj.fitnessVal , let fitness2 = obj2.fitnessVal else { return false }
             return fitness > fitness2
         }
@@ -211,8 +230,13 @@ class Poll<T: Calculable> {
         
         gen += 1
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+        safe += 1
+        
+        DispatchQueue.init(label: "Work").async {
+            
+            //        if safe < num / 2 {
             self.runGen()
+            //        }
         }
     }
     
@@ -398,7 +422,7 @@ extension String: Calculable {
     
     private static func randomString(length: Int, targetLength: Int, numOfWorkers: Int) -> String {
 
-        let letters : NSString = "abcdefghijklmnopqrstuvwxyz'ABCDEFGHIJKLMNOPQRSTUVWXYZ; .,?:@#$%^&*()_+=-±!0123456789"
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyz'ABCDEFGHIJKLMNOPQRSTUVWXYZ; .,?:@#$%^&*()_+=-±!0123456789\n    "
         let len = UInt32(letters.length)
         
         var randomString = ""
