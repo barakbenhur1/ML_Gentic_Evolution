@@ -62,7 +62,7 @@ class ViewController: UIViewController {
         
         poll.delegate = self
         
-        poll.decisionHandler = { [weak self] index in
+        poll.decisionHandler = { [weak self] index, length, fitnessVals, extraDimension in
             guard let strongSelf = self else { return true }
             return index > Int.random(in: 0..<strongSelf.target.count)
         }
@@ -283,10 +283,10 @@ extension UIColor {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner = Scanner(string: hexString)
         if (hexString.hasPrefix("#")) {
-            scanner.scanLocation = 1
+            scanner.currentIndex = scanner.string.index(after: scanner.string.startIndex)
         }
-        var color: UInt32 = 0
-        scanner.scanHexInt32(&color)
+        var color: UInt64 = 0
+        scanner.scanHexInt64(&color)
         let mask = 0x000000FF
         let r = Int(color >> 16) & mask
         let g = Int(color >> 8) & mask
@@ -323,6 +323,10 @@ extension StringProtocol {
 }
 
 extension String: DNA {
+    
+    public func distanceTo(target: String) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
+    }
     
     public var isCompletedTask: ((String) -> (Bool))? {
         get {

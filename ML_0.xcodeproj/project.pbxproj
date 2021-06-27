@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		B62A4C022682989E003CEB90 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A4C002682989E003CEB90 /* Header.swift */; };
 		B62A4C032682989E003CEB90 /* Header.xib in Resources */ = {isa = PBXBuildFile; fileRef = B62A4C012682989E003CEB90 /* Header.xib */; };
-		B632E2822687D4E6002A8AAA /* BbhGMl.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B632E2812687D4E6002A8AAA /* BbhGMl.xcframework */; };
-		B632E2832687D4E6002A8AAA /* BbhGMl.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B632E2812687D4E6002A8AAA /* BbhGMl.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B6423D76268092270066A765 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D75268092270066A765 /* AppDelegate.swift */; };
 		B6423D78268092270066A765 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D77268092270066A765 /* SceneDelegate.swift */; };
 		B6423D7A268092270066A765 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D79268092270066A765 /* ViewController.swift */; };
@@ -22,6 +20,8 @@
 		B6423D9B268092290066A765 /* ML_0UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6423D9A268092290066A765 /* ML_0UITests.swift */; };
 		B68859422682700D00933C98 /* AgentCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B68859412682700C00933C98 /* AgentCollectionViewCell.xib */; };
 		B68859472682710800933C98 /* AgentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68859462682710800933C98 /* AgentCollectionViewCell.swift */; };
+		B6F05A9E268933F1003CCDC6 /* BbhGMl.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F05A9D268933F1003CCDC6 /* BbhGMl.xcframework */; };
+		B6F05A9F268933F1003CCDC6 /* BbhGMl.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B6F05A9D268933F1003CCDC6 /* BbhGMl.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +48,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B632E2832687D4E6002A8AAA /* BbhGMl.xcframework in Embed Frameworks */,
+				B6F05A9F268933F1003CCDC6 /* BbhGMl.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,7 +58,6 @@
 /* Begin PBXFileReference section */
 		B62A4C002682989E003CEB90 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		B62A4C012682989E003CEB90 /* Header.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Header.xib; sourceTree = "<group>"; };
-		B632E2812687D4E6002A8AAA /* BbhGMl.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BbhGMl.xcframework; path = ../BbhGMl/build/BbhGMl.xcframework; sourceTree = "<group>"; };
 		B6423D72268092270066A765 /* ML_0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ML_0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6423D75268092270066A765 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6423D77268092270066A765 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +75,7 @@
 		B6423D9C268092290066A765 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B68859412682700C00933C98 /* AgentCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AgentCollectionViewCell.xib; sourceTree = "<group>"; };
 		B68859462682710800933C98 /* AgentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentCollectionViewCell.swift; sourceTree = "<group>"; };
+		B6F05A9D268933F1003CCDC6 /* BbhGMl.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BbhGMl.xcframework; path = ../BbhGeneticMlAlgorithm/build/BbhGMl.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B632E2822687D4E6002A8AAA /* BbhGMl.xcframework in Frameworks */,
+				B6F05A9E268933F1003CCDC6 /* BbhGMl.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,7 +165,7 @@
 		B64BCAD22683C4D6005EE20E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B632E2812687D4E6002A8AAA /* BbhGMl.xcframework */,
+				B6F05A9D268933F1003CCDC6 /* BbhGMl.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
