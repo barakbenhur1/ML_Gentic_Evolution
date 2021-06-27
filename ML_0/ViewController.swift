@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import BbhGMl
 
 class ViewController: UIViewController {
     
@@ -15,7 +16,7 @@ class ViewController: UIViewController {
    
     private var target = "To be, or not to be." // "To be, or not to be, that is the question?!: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep; No more; and by a sleep, to say we end The heart-ache, and the thousand natural shocks That Flesh is heir to? 'Tis a consummation Devoutly to be wished." //String.random(length: Int.random(in: 6...30))
     
-    private var poll: Poll<String>!
+    private var poll: MlPoll<String>!
     
     private var startTime: Date!
     
@@ -47,7 +48,7 @@ class ViewController: UIViewController {
         body.layer.borderWidth = 0.7
         body.layer.borderColor = UIColor.black.cgColor
         
-        let text = "Size of poll: \(numOfAgents)\n\nTarget: \(target)\n\nLength: \(target.count)\n\nGuess: \("Processing...")"
+        let text = "Size of poll: \(numOfAgents)\n\nTarget: \(target)\n\nLength: \(target.length())\n\nGuess: \("Processing...")"
         
         body.text = text
         
@@ -57,16 +58,21 @@ class ViewController: UIViewController {
         
         time.text = "§Time: 0 Sec׳§"
         
-        poll = Poll(num: numOfAgents)
+        poll = MlPoll(num: numOfAgents)
         
         poll.delegate = self
         
-        poll.start(target: target)
+        poll.decisionHandler = { [weak self] index in
+            guard let strongSelf = self else { return true }
+            return index > Int.random(in: 0..<strongSelf.target.count)
+        }
         
-        poll.finish = { [self] guess, val, lettersIndexs, done in
+        poll.start(target: target, lengthLimit: target.count)
+        
+        poll.finish = { [self] agent, val, lettersIndexs, done in
             //            guard collection == nil else { return }
             DispatchQueue.main.async {
-                update(guess: guess, string: val, lettersIndexs: lettersIndexs, done: done)
+                update(guess: agent.getData()!, string: val, lettersIndexs: lettersIndexs, done: done)
             }
         }
         
@@ -155,8 +161,9 @@ class ViewController: UIViewController {
         semaphore.signal()
         resetButton.isHidden = true
         startTime = Date()
-        target = String.random(length: Int.random(in: 6...30))
-        poll.start(target: target)
+        target = String.random(length: Int.random(in: 6...30), extra: nil)
+        poll.resetAgents()
+        poll.start(target: target, lengthLimit: target.count)
         done = false
         startTimer()
     }
@@ -299,3 +306,168 @@ extension UIColor {
         return String(format:"#%06x", rgb)
     }
 }
+
+extension StringProtocol {
+    subscript(offset: Int) -> Character { self[index(startIndex, offsetBy: offset)] }
+    subscript(range: Range<Int>) -> SubSequence {
+        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
+        return self[startIndex..<index(startIndex, offsetBy: range.count)]
+    }
+    subscript(range: ClosedRange<Int>) -> SubSequence {
+        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
+        return self[startIndex..<index(startIndex, offsetBy: range.count)]
+    }
+    subscript(range: PartialRangeFrom<Int>) -> SubSequence { self[index(startIndex, offsetBy: range.lowerBound)...] }
+    subscript(range: PartialRangeThrough<Int>) -> SubSequence { self[...index(startIndex, offsetBy: range.upperBound)] }
+    subscript(range: PartialRangeUpTo<Int>) -> SubSequence { self[..<index(startIndex, offsetBy: range.upperBound)] }
+}
+
+extension String: DNA {
+    
+    public var isCompletedTask: ((String) -> (Bool))? {
+        get {
+            return nil
+        }
+        set {}
+    }
+    
+    
+    public var isFinish: ((String) -> (Bool))? {
+        get { return nil }
+        set {}
+    }
+    
+    public func cleanBetweenGens() {}
+    
+    public var extra: Any? {
+        get { return nil }
+        set {}
+    }
+    
+    public func printDescription() {
+//        print("Description: \(self)")
+    }
+    
+    public init(copy string: String) {
+        self = string
+    }
+    
+//    public static func emptyChromosome() -> Chromosome {
+//        return ""
+//    }
+    
+    public static func random(length: Int, extra: Any?) -> String {
+        return randomString(length: length, targetLength: 0, numOfWorkers: 0)
+    }
+    
+    private static func randomString(length: Int, targetLength: Int, numOfWorkers: Int) -> String {
+        
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyz'ABCDEFGHIJKLMNOPQRSTUVWXYZ; .,?:@#$%^&*()_+=-±!0123456789\n    "
+        let len = UInt32(letters.length)
+        
+        var randomString = ""
+        
+        //        var repeatFlag = true
+        //        while repeatFlag {
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+            //                if targetLength >= 0 {
+            //                    randomFix![randomString] = randomFix![randomString] ?? 0
+            //                }
+            //            }
+            //            if targetLength < 0 {
+            //                repeatFlag = false
+            //            }
+            //            else {
+            //                randomFix![randomString]! += 1
+            //                let randomRatio: CGFloat = CGFloat(randomFix![randomString]!) / CGFloat(targetLength)
+            //                let multi: CGFloat = CGFloat(numOfWorkers / targetLength) * ratio
+            //                repeatFlag = randomRatio * multi >= 1
+            //
+            ////                print("value: char: \(randomString) : score: \(randomFix![randomString] ?? 0), randomRatio: \(randomRatio), multi: \(multi), total: \(randomRatio * multi)")
+            //
+            //                if repeatFlag {
+            ////                    print("Stop... value: char: \(randomString) : score: \(randomFix![randomString] ?? 0), randomRatio: \(randomRatio), multi: \(multi), total: \(randomRatio * multi)")
+            //                    randomFix![randomString]! /= 10
+            //                }
+            //            }
+        }
+        
+        return randomString
+    }
+    
+    public static func +=(lhs: inout String, rhs: String) {
+        lhs = lhs + rhs
+    }
+    
+//    public static func +=(lhs: inout String, rhs: Chromosome) {
+//        lhs = lhs + (rhs as! String)
+//    }
+//
+    public static func ==(lhs: String, rhs: String) -> Bool {
+        return lhs.elementsEqual(rhs)
+    }
+    
+    public subscript(offset: Int) -> String {
+        get {
+            return "\(self[index(startIndex, offsetBy: offset)])"
+        }
+        set {
+            self = (self as NSString).replacingCharacters(in: NSRange(location: offset, length: 1), with: newValue)
+        }
+    }
+    
+    public static func empty() -> String {
+        return ""
+    }
+    
+    public func length() -> Int {
+        return count
+    }
+    
+    func elementsEqual(other: String) -> Bool {
+        return elementsEqual(other)
+    }
+    
+    public func calcFitness(val: String?, best: CGFloat) -> (val: CGFloat, extraDimension: CGFloat) {
+        guard let  val = val else { return (0, 0) }
+        var count: CGFloat = 0.1
+        
+        for i in 0..<val.count {
+            if self[i] == val[i] {
+                count += 1
+            }
+        }
+        let x = count / CGFloat(val.count)
+        return (best * (x / best) / CGFloat(val.count), CGFloat(Int(count)))
+    }
+    
+    public func mutate(rate: CGFloat) -> Self {
+        
+        //        guard let val = val else { return "" }
+        
+        var tempVal = ""
+        
+        for i in 0..<length() {
+            let c = self[i] as Character
+            
+            let r = CGFloat.random(in: 0...1)
+            
+            if r < rate {
+                tempVal += String.random(length: 1, extra: nil)
+            }
+            else {
+                tempVal += "\(c)"
+            }
+        }
+        
+        return tempVal
+    }
+    
+    public func find(target: String, count: CGFloat) -> Bool {
+        return self == target && target.length() == length()
+    }
+}
+
