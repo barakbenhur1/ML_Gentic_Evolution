@@ -12,9 +12,9 @@ class ViewController: UIViewController {
     
     private let semaphore = DispatchSemaphore(value: 1)
     
-    private let numOfAgents = 400
+    private let numOfAgents = 1000
    
-    private var target = "To be, or not to be." // "To be, or not to be, that is the question?!: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep; No more; and by a sleep, to say we end The heart-ache, and the thousand natural shocks That Flesh is heir to? 'Tis a consummation Devoutly to be wished." //String.random(length: Int.random(in: 6...30))
+    private var target = "To be, or not to be, that is the question?!" //String.random(length: Int.random(in: 6...30))
     
     private var poll: MlPoll<String>!
     
@@ -323,6 +323,10 @@ extension StringProtocol {
 }
 
 extension String: DNA {
+    
+    public func equalTo(byEndGoal other: String) -> Bool {
+        return self == other
+    }
     
     public func distanceTo(target: String) -> CGFloat {
         return CGFloat.leastNonzeroMagnitude
